@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: http-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-client
+  template:
+    metadata:
+      labels:
+        app: http-client
+    spec:
+      containers:
+      - name: client
+        image: reg.kolla.org/library/http-client:v1.0
+        imagePullPolicy: Always
+        env:
+        - name: REQUEST_URL
+          value: nginx-service.default:8080
+        - name: REQUEST_TIMEOUT
+          # 每5s进行一次探测，默认超时3s
+          value: "3"
